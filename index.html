@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<link rel="manifest" href="manifest.json">
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+<meta charset="UTF-8">
+<title>LogPort – All-in-One App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+/* ------------------------------------------------------
+   GLOBAL STYLE 
+------------------------------------------------------ */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f8f4e6;
+    overflow-x: hidden;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ------------------------------------------------------
+   TOP BAR
+------------------------------------------------------ */
+
+.topbar {
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    font-size: 20px;
+}
+
+.logo-icon {
+    width: 34px;
+}
+
+.menu-icon {
+    font-size: 26px;
+}
+
+/* ------------------------------------------------------
+   STARTSEITE (Stadtwahl)
+------------------------------------------------------ */
+
+.screen {
+    display: none;
+    padding: 20px;
+}
+
+#screen-start {
+    display: block;
+}
+
+.title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    padding: 20px;
+}
+
+.city-btn {
+    background: #111;
+    color: #fff;
+    padding: 22px 10px;
+    border-radius: 10px;
+    font-size: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.city-btn:hover {
+    background: #333;
+    transform: translateY(-3px);
+}
+
+/* ------------------------------------------------------
+   KATEGORIE-SEITEN STYLE (One Piece Map Theme)
+------------------------------------------------------ */
+
+.category-screen {
+    background-image: url('assets/textures/old_map.jpg');
+    background-size: cover;
+    min-height: 100vh;
+    padding: 20px;
+    color: #3a1c00;
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 8px 14px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.cat-btn {
+    display: block;
+    background: #f4e7c6;
+    padding: 16px;
+    margin: 10px 0;
+    border: 2px solid #3a1c00;
+    font-size: 18px;
+    font-weight: bold;
+    color: #3a1c00;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.service-block {
+    background: #fff3d8;
+    margin: 15px 0;
+    padding: 14px;
+    border: 2px solid #3a1c00;
+    border-radius: 10px;
+}
+
+.service-block .desc {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #4a2a00;
+}
+
+/* ------------------------------------------------------
+   END CSS
+------------------------------------------------------ */
+
+</style>
+
+<script>
+
+/* ------------------------------------------------------
+   JS: Screen Navigation
+------------------------------------------------------ */
+
+function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
+    document.getElementById(id).style.display = "block";
+    window.scrollTo(0, 0);
+}
+
+/* ------------------------------------------------------
+   JS: Tracking (fake — später Supabase)
+------------------------------------------------------ */
+
+function track(city) {
+    console.log("City selected:", city);
+    // später: supabase insert...
+}
+
+/* ------------------------------------------------------
+   END JS
+------------------------------------------------------ */
+
+</script>
+
+</head>
+
+<body>
+
+<!-- ------------------------------------------------------
+     TOP LEISTE
+------------------------------------------------------ -->
+<div class="topbar">
+    <img src="assets/icons/logport_icon.png" class="logo-icon">
+    <div>LogPort</div>
+    <div class="menu-icon">☰</div>
+</div>
+
+<!-- ------------------------------------------------------
+     SCREEN 1: STADTWAHL
+------------------------------------------------------ -->
+<div id="screen-start" class="screen">
+    <h1 class="title">Wähle deine Stadt</h1>
+
+    <div class="grid">
+
+        <div class="city-btn" onclick="track('Essen'); showScreen('essen')">Essen</div>
+        <div class="city-btn" onclick="track('Bottrop'); showScreen('bottrop')">Bottrop</div>
+        <div class="city-btn" onclick="track('Gelsenkirchen'); showScreen('gelsenkirchen')">Gelsenkirchen</div>
+        <div class="city-btn" onclick="track('Mülheim'); showScreen('muelheim')">Mülheim</div>
+        <div class="city-btn" onclick="track('Velbert'); showScreen('velbert')">Velbert</div>
+        <div class="city-btn" onclick="track('Bochum'); showScreen('bochum')">Bochum</div>
+        <div class="city-btn" onclick="track('Herne'); showScreen('herne')">Herne</div>
+        <div class="city-btn" onclick="track('Wuppertal'); showScreen('wuppertal')">Wuppertal</div>
+        <div class="city-btn" onclick="track('Oberhausen'); showScreen('oberhausen')">Oberhausen</div>
+
+    </div>
+</div>
+<!-- ------------------------------------------------------
+     SCREEN: ESSEN
+------------------------------------------------------ -->
+<div id="essen" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Essen?</h1>
+
+    <div class="cat-btn" onclick="showScreen('essen_haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="showScreen('essen_garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="showScreen('essen_terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="showScreen('essen_innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="showScreen('essen_technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="showScreen('essen_statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="showScreen('essen_fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="showScreen('essen_komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+<!-- ------------------------------------------------------
+     SCREEN: BOTTROP
+------------------------------------------------------ -->
+<div id="bottrop" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Bottrop?</h1>
+
+    <div class="cat-btn" onclick="showScreen('bottrop_haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="showScreen('bottrop_garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="showScreen('bottrop_terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="showScreen('bottrop_innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="showScreen('bottrop_technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="showScreen('bottrop_statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="showScreen('bottrop_fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="showScreen('bottrop_komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+<!-- ------------------------------------------------------
+     SCREEN: GELSENKIRCHEN
+------------------------------------------------------ -->
+<div id="gelsenkirchen" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Gelsenkirchen?</h1>
+
+    <div class="cat-btn" onclick="showScreen('gel_haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="showScreen('gel_garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="showScreen('gel_terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="showScreen('gel_innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="showScreen('gel_technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="showScreen('gel_statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="showScreen('gel_fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="showScreen('gel_komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+<!-- ------------------------------------------------------
+     SCREEN: MÜLHEIM
+------------------------------------------------------ -->
+<div id="muelheim" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Mülheim?</h1>
+
+    <div class="cat-btn" onclick="showScreen('m_haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="showScreen('m_garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="showScreen('m_terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="showScreen('m_innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="showScreen('m_technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="showScreen('m_statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="showScreen('m_fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="showScreen('m_komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+<!-- ------------------------------------------------------
+     SCREEN: VELBERT
+------------------------------------------------------ -->
+<div id="velbert" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Velbert?</h1>
+
+    <div class="cat-btn" onclick="showScreen('v_haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="showScreen('v_garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="showScreen('v_terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="showScreen('v_innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="showScreen('v_technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="showScreen('v_statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="showScreen('v_fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="showScreen('v_komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+<!-- ------------------------------------------------------
+     SCREEN: BOCHUM
+------------------------------------------------------ -->
+<div id="bochum" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Bochum?</h1>
+
+    <div class="cat-btn" onclick="showScreen('b_haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="showScreen('b_garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="showScreen('b_terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="showScreen('b_innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="showScreen('b_technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="showScreen('b_statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="showScreen('b_fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="showScreen('b_komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+<!-- ------------------------------------------------------
+     SCREEN: HERNE
+------------------------------------------------------ -->
+<div id="herne" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Herne?</h1>
+
+    <div class="cat-btn" onclick="showScreen('h_haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="showScreen('h_garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="showScreen('h_terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="showScreen('h_innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="showScreen('h_technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="showScreen('h_statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="showScreen('h_fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="showScreen('h_komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+<!-- ------------------------------------------------------
+     SCREEN: WUPPERTAL
+------------------------------------------------------ -->
+<div id="wuppertal" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Wuppertal?</h1>
+
+    <div class="cat-btn" onclick="showScreen('w_haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="showScreen('w_garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="showScreen('w_terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="showScreen('w_innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="showScreen('w_technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="showScreen('w_statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="showScreen('w_fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="showScreen('w_komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+<!-- ------------------------------------------------------
+     SCREEN: OBERHAUSEN
+------------------------------------------------------ -->
+<div id="oberhausen" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Oberhausen?</h1>
+
+    <div class="cat-btn" onclick="showScreen('o_haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="showScreen('o_garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="showScreen('o_terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="showScreen('o_innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="showScreen('o_technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="showScreen('o_statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="showScreen('o_fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="showScreen('o_komfort')">Komfort & Lifestyle</div>
+
+</div>
+<!-- ======================================================
+     ESSEN – KATEGORIE: HAUS & GEBÄUDE
+====================================================== -->
+<div id="essen_haus" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('essen')">← Zurück</div>
+    <h1 class="title">Haus & Gebäude – Essen</h1>
+
+    <div class="service-block">
+        <div class="cat-btn">Abriss & Rückbau</div>
+        <p class="desc">Rückbau alter Strukturen, Entfernung von Wänden.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Sanierung</div>
+        <p class="desc">Modernisierung, Feuchtigkeitsschäden, Kernsanierung.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Trockenbau</div>
+        <p class="desc">Leichtbauwände, Verkleidungen, Raumaufteilungen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Innenausbau</div>
+        <p class="desc">Kompletter Innenausbau inklusive Türen, Böden und Wänden.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Fenster & Türen</div>
+        <p class="desc">Einbau, Reparatur und Austausch moderner Fenster & Türen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Dacharbeiten</div>
+        <p class="desc">Dachsanierung, Abdichtung, Reparaturen und Dachrinnenservice.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Fassadenarbeiten</div>
+        <p class="desc">Dämmung, Fassadensanierung, Putzarbeiten.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Böden & Estrich</div>
+        <p class="desc">Estricharbeiten, Bodenvorbereitung, Untergründe & Bodenbeläge.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Malerarbeiten</div>
+        <p class="desc">Anstriche, Spachtelarbeiten, Tapezieren.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Isolierung / Energie</div>
+        <p class="desc">Wärmedämmung, Schallschutz & energetische Modernisierung.</p>
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ESSEN – KATEGORIE: GARTEN & AUSSENANLAGEN
+====================================================== -->
+<div id="essen_garten" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('essen')">← Zurück</div>
+    <h1 class="title">Garten & Außenanlagen – Essen</h1>
+
+    <div class="service-block">
+        <div class="cat-btn">Rasen mähen</div>
+        <p class="desc">Mähen, Kanten schneiden, regelmäßige Pflege.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Hecken schneiden</div>
+        <p class="desc">Präziser Formschnitt & Pflege.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Baumfällung</div>
+        <p class="desc">Sichere Fällung & Entsorgung.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Gartenpflege</div>
+        <p class="desc">Pflege von Pflanzen, Beeten & Grünflächen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Bewässerungssysteme</div>
+        <p class="desc">Moderne automatische Bewässerungen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Hochdruckreinigung</div>
+        <p class="desc">Reinigung von Terrassen, Wegen & Steinflächen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Pflasterarbeiten Wege</div>
+        <p class="desc">Wege neu anlegen oder reparieren.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Zaunbau</div>
+        <p class="desc">Montage von Holz-, Metall- & Sichtschutzzäunen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Gartenhäuser aufstellen</div>
+        <p class="desc">Fundament, Aufbau & Montage.</p>
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ESSEN – KATEGORIE: TERRASSE & EINFARHTEN
+====================================================== -->
+<div id="essen_terrasse" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('essen')">← Zurück</div>
+    <h1 class="title">Terrasse & Einfahrten – Essen</h1>
+
+    <div class="service-block">
+        <div class="cat-btn">Alte Terrasse abreißen</div>
+        <p class="desc">Komplette Demontage & Entsorgung.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Terrassen neu bauen</div>
+        <p class="desc">WPC, Holz oder Stein – professionell gebaut.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Einfahrt pflastern</div>
+        <p class="desc">Reparatur & Neubau moderner Einfahrten.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Unterboden herstellen</div>
+        <p class="desc">Stabiler, tragfähiger Untergrund.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Drainage</div>
+        <p class="desc">Effiziente Entwässerungssysteme.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Randsteine setzen</div>
+        <p class="desc">Saubere Einfassungen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Terrassendächer</div>
+        <p class="desc">Überdachungen aus Glas, Holz oder Aluminium.</p>
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ESSEN – KATEGORIE: INNENRAUM & RENOVIERUNG
+====================================================== -->
+<div id="essen_innenraum" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('essen')">← Zurück</div>
+    <h1 class="title">Innenraum & Renovierung – Essen</h1>
+
+    <div class="service-block">
+        <div class="cat-btn">Küche umbauen</div>
+        <p class="desc">Modernisierung & Neugestaltung alter Küchen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Bad sanieren</div>
+        <p class="desc">Komplett- oder Teilrenovierung moderner Bäder.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Bodenverlegung</div>
+        <p class="desc">Laminat, Vinyl, Parkett, Teppich.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Fliesenarbeiten</div>
+        <p class="desc">Wand- & Bodenfliesen professionell verlegen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Wanddurchbrüche</div>
+        <p class="desc">Öffnungen in Wänden (mit Statiker).</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Möbeleinbau</div>
+        <p class="desc">Montage & Einbau von Möbeln aller Art.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Wohnungsrenovierung komplett</div>
+        <p class="desc">Komplette Innenrenovierung aus einer Hand.</p>
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ESSEN – KATEGORIE: TECHNIK & HAUSTECHNIK
+====================================================== -->
+<div id="essen_technik" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('essen')">← Zurück</div>
+    <h1 class="title">Technik & Haustechnik – Essen</h1>
+
+    <div class="service-block">
+        <div class="cat-btn">Elektrik</div>
+        <p class="desc">Installation & Reparatur elektrischer Anlagen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Smart-Home</div>
+        <p class="desc">Moderne Steuerungssysteme für dein Zuhause.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Heizung / Sanitär</div>
+        <p class="desc">Einbau, Wartung & Reparatur.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Lüftung</div>
+        <p class="desc">Frischluftsysteme für Wohnräume, Keller & Gewerbe.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Klimaanlagen</div>
+        <p class="desc">Montage & Wartung von Klimageräten.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Photovoltaik</div>
+        <p class="desc">Planung, Installation & Wartung von Solaranlagen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Wallbox-Installation</div>
+        <p class="desc">Ladestationen für Elektroautos installieren.</p>
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ESSEN – KATEGORIE: STATISCHE EINGRIFFE
+====================================================== -->
+<div id="essen_statik" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('essen')">← Zurück</div>
+    <h1 class="title">Statische Eingriffe – Essen</h1>
+
+    <div class="service-block">
+        <div class="cat-btn">Wanddurchbrüche</div>
+        <p class="desc">Öffnungen bei tragenden & nicht tragenden Wänden.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Statikberechnung</div>
+        <p class="desc">Professionelle Berechnungen durch Ingenieurbüros.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Bauantrag</div>
+        <p class="desc">Unterstützung bei Genehmigungen & Anträgen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Genehmigungen</div>
+        <p class="desc">Klärung aller baurechtlichen Vorgaben.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Stahlträger einbauen</div>
+        <p class="desc">Einbau von Trägern zur Stabilisierung neuer Öffnungen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Kellerwände verstärken</div>
+        <p class="desc">Sanierung & Absicherung schwacher Wände.</p>
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ESSEN – KATEGORIE: FAHRZEUGE & MOBILITÄT
+====================================================== -->
+<div id="essen_fahrzeuge" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('essen')">← Zurück</div>
+    <h1 class="title">Fahrzeuge & Mobilität – Essen</h1>
+
+    <div class="service-block">
+        <div class="cat-btn">Autoreparaturen</div>
+        <p class="desc">Arbeiten über zertifizierte KFZ-Partnerbetriebe.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Reifenservice</div>
+        <p class="desc">Montage, Einlagerung & Reifenwechsel.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Fahrzeugaufbereitung</div>
+        <p class="desc">Innen- & Außenreinigung auf Profi-Niveau.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Smart-Repair</div>
+        <p class="desc">Reparatur kleiner Kratzer & Dellen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Fahrzeugvermittlung</div>
+        <p class="desc">An- & Verkauf über geprüfte Partner.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Unfallvermittlung</div>
+        <p class="desc">Komplette Schadensabwicklung inkl. Gutachter.</p>
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ESSEN – KATEGORIE: KOMFORT & LIFESTYLE
+====================================================== -->
+<div id="essen_komfort" class="screen category-screen hidden">
+
+    <div class="back-btn" onclick="showScreen('essen')">← Zurück</div>
+    <h1 class="title">Komfort & Lifestyle – Essen</h1>
+
+    <div class="service-block">
+        <div class="cat-btn">Hausmeisterservice</div>
+        <p class="desc">Regelmäßige Betreuung & Pflege deiner Immobilie.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Reinigungsservice</div>
+        <p class="desc">Haushalts-, Büro- & Grundreinigungen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Entrümpelung</div>
+        <p class="desc">Keller, Wohnungen & Häuser besenrein räumen.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Umzüge</div>
+        <p class="desc">Privat- & Firmenumzüge inkl. Montage.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Winterdienst</div>
+        <p class="desc">Schneeräumen & Streudienst.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Kleine Reparaturen</div>
+        <p class="desc">Alle kleineren handwerklichen Tätigkeiten.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Möbel aufbauen</div>
+        <p class="desc">Aufbau & Montage aller Möbelarten.</p>
+    </div>
+
+    <div class="service-block">
+        <div class="cat-btn">Concierge-Services</div>
+        <p class="desc">Private Dienstleistungen für Alltag & Komfort.</p>
+    </div>
+
+</div>
+
+<!-- ======================================================
+     BOTTROP – KATEGORIE-ÜBERSICHT
+====================================================== -->
+<div id="bottrop" class="screen hidden">
+
+    <div class="back-btn" onclick="showScreen('city_select')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Bottrop?</h1>
+
+    <div class="cat-btn" onclick="openCategory('Bottrop','haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="openCategory('Bottrop','garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="openCategory('Bottrop','terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="openCategory('Bottrop','innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="openCategory('Bottrop','technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="openCategory('Bottrop','statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="openCategory('Bottrop','fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="openCategory('Bottrop','komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+
+<!-- ======================================================
+     GELSENKIRCHEN
+====================================================== -->
+<div id="gelsenkirchen" class="screen hidden">
+
+    <div class="back-btn" onclick="showScreen('city_select')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Gelsenkirchen?</h1>
+
+    <div class="cat-btn" onclick="openCategory('Gelsenkirchen','haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="openCategory('Gelsenkirchen','garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="openCategory('Gelsenkirchen','terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="openCategory('Gelsenkirchen','innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="openCategory('Gelsenkirchen','technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="openCategory('Gelsenkirchen','statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="openCategory('Gelsenkirchen','fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="openCategory('Gelsenkirchen','komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+
+<!-- ======================================================
+     MÜLHEIM
+====================================================== -->
+<div id="muelheim" class="screen hidden">
+
+    <div class="back-btn" onclick="showScreen('city_select')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Mülheim?</h1>
+
+    <div class="cat-btn" onclick="openCategory('Mülheim','haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="openCategory('Mülheim','garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="openCategory('Mülheim','terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="openCategory('Mülheim','innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="openCategory('Mülheim','technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="openCategory('Mülheim','statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="openCategory('Mülheim','fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="openCategory('Mülheim','komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+
+<!-- ======================================================
+     VELBERT
+====================================================== -->
+<div id="velbert" class="screen hidden">
+
+    <div class="back-btn" onclick="showScreen('city_select')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Velbert?</h1>
+
+    <div class="cat-btn" onclick="openCategory('Velbert','haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="openCategory('Velbert','garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="openCategory('Velbert','terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="openCategory('Velbert','innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="openCategory('Velbert','technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="openCategory('Velbert','statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="openCategory('Velbert','fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="openCategory('Velbert','komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+
+<!-- ======================================================
+     BOCHUM
+====================================================== -->
+<div id="bochum" class="screen hidden">
+
+    <div class="back-btn" onclick="showScreen('city_select')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Bochum?</h1>
+
+    <div class="cat-btn" onclick="openCategory('Bochum','haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="openCategory('Bochum','garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="openCategory('Bochum','terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="openCategory('Bochum','innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="openCategory('Bochum','technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="openCategory('Bochum','statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="openCategory('Bochum','fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="openCategory('Bochum','komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+
+<!-- ======================================================
+     HERNE
+====================================================== -->
+<div id="herne" class="screen hidden">
+
+    <div class="back-btn" onclick="showScreen('city_select')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Herne?</h1>
+
+    <div class="cat-btn" onclick="openCategory('Herne','haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="openCategory('Herne','garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="openCategory('Herne','terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="openCategory('Herne','innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="openCategory('Herne','technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="openCategory('Herne','statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="openCategory('Herne','fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="openCategory('Herne','komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+
+<!-- ======================================================
+     WUPPERTAL
+====================================================== -->
+<div id="wuppertal" class="screen hidden">
+
+    <div class="back-btn" onclick="showScreen('city_select')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Wuppertal?</h1>
+
+    <div class="cat-btn" onclick="openCategory('Wuppertal','haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="openCategory('Wuppertal','garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="openCategory('Wuppertal','terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="openCategory('Wuppertal','innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="openCategory('Wuppertal','technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="openCategory('Wuppertal','statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="openCategory('Wuppertal','fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="openCategory('Wuppertal','komfort')">Komfort & Lifestyle</div>
+
+</div>
+
+
+<!-- ======================================================
+     OBERHAUSEN
+====================================================== -->
+<div id="oberhausen" class="screen hidden">
+
+    <div class="back-btn" onclick="showScreen('city_select')">← Zurück</div>
+    <h1 class="title">Wobei brauchst du Hilfe in Oberhausen?</h1>
+
+    <div class="cat-btn" onclick="openCategory('Oberhausen','haus')">Haus & Gebäude</div>
+    <div class="cat-btn" onclick="openCategory('Oberhausen','garten')">Garten & Außenanlagen</div>
+    <div class="cat-btn" onclick="openCategory('Oberhausen','terrasse')">Terrasse & Einfahrten</div>
+    <div class="cat-btn" onclick="openCategory('Oberhausen','innenraum')">Innenraum & Renovierung</div>
+    <div class="cat-btn" onclick="openCategory('Oberhausen','technik')">Technik & Haustechnik</div>
+    <div class="cat-btn" onclick="openCategory('Oberhausen','statik')">Statische Eingriffe</div>
+    <div class="cat-btn" onclick="openCategory('Oberhausen','fahrzeuge')">Fahrzeuge & Mobilität</div>
+    <div class="cat-btn" onclick="openCategory('Oberhausen','komfort')">Komfort & Lifestyle</div>
+
+</div>
+<script>
+/* ======================================================
+   1. ALLE SCREENS VERSTECKEN
+====================================================== */
+function hideAllScreens() {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.style.display = 'none';
+    });
+}
+
+/* ======================================================
+   2. SCREEN ANZEIGEN
+====================================================== */
+function showScreen(screenId) {
+    hideAllScreens();
+    const screen = document.getElementById(screenId);
+    if (screen) {
+        screen.style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+}
+
+/* ======================================================
+   3. STATE: AKTUELLE STADT & KATEGORIE
+====================================================== */
+let currentCity = null;
+let currentCategory = null;
+
+/* ======================================================
+   4. STADT WÄHLEN
+====================================================== */
+function selectCity(city) {
+    currentCity = city;
+    updateDynamicCityNames();  // Stadtname anpassen
+    trackSelection("city", city);
+    showScreen("screen-city-cats");
+}
+
+/* ======================================================
+   5. KATEGORIE ÖFFNEN
+====================================================== */
+function openCategory(categoryId) {
+    currentCategory = categoryId;
+    updateDynamicCityNames();
+    trackSelection("category", categoryId);
+
+    const mapping = {
+        "haus": "screen-cat-haus",
+        "garten": "screen-cat-garten",
+        "terrasse": "screen-cat-terrasse",
+        "innenraum": "screen-cat-innenraum",
+        "technik": "screen-cat-technik",
+        "statik": "screen-cat-statik",
+        "fahrzeuge": "screen-cat-fahrzeuge",
+        "komfort": "screen-cat-komfort"
+    };
+
+    const screenId = mapping[categoryId];
+    if (screenId) showScreen(screenId);
+}
+
+/* ======================================================
+   6. ZURÜCK ZUR STADT-KATEGORIE-SEITE
+====================================================== */
+function backToCityCats() {
+    updateDynamicCityNames();
+    showScreen("screen-city-cats");
+}
+
+/* ======================================================
+   7. STADTNAME DYNAMISCH EINSETZEN
+====================================================== */
+function updateDynamicCityNames() {
+    if (!currentCity) return;
+    document.querySelectorAll("[data-city-name]").forEach(el => {
+        el.textContent = currentCity;
+    });
+}
+
+/* ======================================================
+   8. TRACKING (für später: Datenbank / Supabase)
+====================================================== */
+function trackSelection(type, value) {
+    console.log("Tracking:", type, value, "Stadt:", currentCity);
+
+    /* Optional später:
+    supabase.from("logport_tracking").insert([
+        { type: type, value: value, city: currentCity, timestamp: Date.now() }
+    ]);
+    */
+}
+</script>
+</body>
+</html>
