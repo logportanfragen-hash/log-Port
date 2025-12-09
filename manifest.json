@@ -1,0 +1,21 @@
+{
+  "name": "LogPort",
+  "short_name": "LogPort",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "LogPort – Dienstleistungen in deiner Stadt finden",
+  "icons": [
+    {
+      "src": "icons/logport-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/logport-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
