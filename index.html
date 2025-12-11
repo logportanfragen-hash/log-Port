@@ -8,27 +8,27 @@
 <style>
 
 /* -----------------------------------------
-   GLOBAL STYLES
+   GLOBAL DESIGN
 ----------------------------------------- */
 body {
     margin: 0;
     padding: 0;
     font-family: 'Georgia', serif;
     color: #fff;
+    background: #000;
 }
 
-/* Jeder Screen hat dein Hintergrundbild */
+/* Hintergrund für ALLE Seiten */
 .screen {
     position: relative;
     min-height: 100vh;
     padding: 20px;
-    background-image: url('start_background..jpg');
+    background-image: url('assets/textures/background.jpg');
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
 }
 
-/* Abdunklung für bessere Lesbarkeit */
+/* Abdunklung für Lesbarkeit */
 .screen::before {
     content: "";
     position: absolute;
@@ -36,7 +36,6 @@ body {
     background: rgba(0,0,0,0.30);
     z-index: 0;
 }
-
 .screen > * {
     position: relative;
     z-index: 1;
@@ -60,22 +59,21 @@ body {
 }
 
 .logo-icon {
-    width: 38px;
+    width: 40px;
 }
 
 /* -----------------------------------------
-   TITLES
+   TITEL
 ----------------------------------------- */
 .title {
     text-align: center;
     font-size: 34px;
     font-weight: bold;
-    margin-top: 10px;
     text-shadow: 2px 2px 4px #000;
 }
 
 /* -----------------------------------------
-   CITY GRID (STARTSEITE)
+   STADTWAHL GRID
 ----------------------------------------- */
 .city-grid {
     display: grid;
@@ -90,26 +88,26 @@ body {
     border-radius: 14px;
     text-align: center;
     cursor: pointer;
-    transition: 0.2s;
     border: 1px solid #aa8f55;
+    transition: 0.2s;
 }
 
 .city-btn img {
     width: 70px;
     height: 70px;
     border-radius: 999px;
-    margin-bottom: 8px;
     border: 2px solid #aa8f55;
+    margin-bottom: 6px;
 }
 
 .city-btn:hover {
+    background: rgba(0,0,0,0.85);
     transform: translateY(-4px);
-    background: rgba(0,0,0,0.80);
-    box-shadow: 0 0 10px #c4b07a;
+    box-shadow: 0 0 10px #aa8f55;
 }
 
 /* -----------------------------------------
-   CATEGORY GRID
+   KATEGORIEN GRID
 ----------------------------------------- */
 .cat-grid {
     margin-top: 20px;
@@ -125,7 +123,6 @@ body {
     text-align: center;
     border: 1px solid #c4b07a;
     cursor: pointer;
-    transition: 0.2s;
     backdrop-filter: blur(4px);
 }
 
@@ -151,30 +148,23 @@ body {
     border-radius: 6px;
     color: #fff;
     border: 1px solid #c4b07a;
-    margin-bottom: 10px;
     cursor: pointer;
-    transition: 0.2s;
+    margin-bottom: 14px;
 }
 
 .back-btn:hover {
     background: rgba(0,0,0,0.9);
-    box-shadow: 0 0 6px #c4b07a;
 }
 
 /* -----------------------------------------
-   SERVICES LIST
+   DIENSTLEISTUNGEN
 ----------------------------------------- */
 .service-block {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.12);
     border: 1px solid #c4b07a;
     padding: 14px;
     border-radius: 10px;
     margin: 12px 0;
-    backdrop-filter: blur(4px);
-}
-
-.service-block b {
-    font-size: 20px;
 }
 
 .service-block:hover {
@@ -182,55 +172,48 @@ body {
 }
 
 </style>
-
 </head>
+
 <body>
 
 <!-- TOPBAR -->
 <div class="topbar">
-    <img src="logport-192.png" class="logo-icon">
+    <img src="assets/icons/logport_icon.png" class="logo-icon">
     <div>LogPort</div>
     <div>☰</div>
 </div>
 
-<!-- STARTSEITE -->
+<!-- -----------------------------------------
+     STARTSEITE (STADTWAHL)
+----------------------------------------- -->
 <div id="screen-start" class="screen">
     <h1 class="title">Wähle deine Stadt</h1>
-
     <div class="city-grid">
 
         <div class="city-btn" onclick="selectCity('Essen')">
             <img src="assets/cities/essen.png">Essen
         </div>
-
         <div class="city-btn" onclick="selectCity('Bottrop')">
             <img src="assets/cities/bottrop.png">Bottrop
         </div>
-
         <div class="city-btn" onclick="selectCity('Gelsenkirchen')">
             <img src="assets/cities/gelsenkirchen.png">Gelsenkirchen
         </div>
-
         <div class="city-btn" onclick="selectCity('Mülheim')">
             <img src="assets/cities/muelheim.png">Mülheim
         </div>
-
         <div class="city-btn" onclick="selectCity('Velbert')">
             <img src="assets/cities/velbert.png">Velbert
         </div>
-
         <div class="city-btn" onclick="selectCity('Bochum')">
             <img src="assets/cities/bochum.png">Bochum
         </div>
-
         <div class="city-btn" onclick="selectCity('Herne')">
             <img src="assets/cities/herne.png">Herne
         </div>
-
         <div class="city-btn" onclick="selectCity('Wuppertal')">
             <img src="assets/cities/wuppertal.png">Wuppertal
         </div>
-
         <div class="city-btn" onclick="selectCity('Oberhausen')">
             <img src="assets/cities/oberhausen.png">Oberhausen
         </div>
@@ -238,50 +221,30 @@ body {
     </div>
 </div>
 
-<!-- KATEGORIE AUSWAHL -->
+<!-- -----------------------------------------
+     SCREEN KATEGORIEAUSWAHL
+----------------------------------------- -->
 <div id="screen-category-select" class="screen hidden">
-
     <div class="back-btn" onclick="showScreen('screen-start')">← Zurück</div>
     <h1 class="title">Wobei brauchst du Hilfe in <span data-city-name></span>?</h1>
 
     <div class="cat-grid">
-
-        <div class="cat-btn" onclick="openCategory('haus')">
-            <img src="assets/categories/haus.png">Haus & Gebäude
-        </div>
-
-        <div class="cat-btn" onclick="openCategory('garten')">
-            <img src="assets/categories/garten.png">Garten
-        </div>
-
-        <div class="cat-btn" onclick="openCategory('terrasse')">
-            <img src="assets/categories/terrasse.png">Terrasse
-        </div>
-
-        <div class="cat-btn" onclick="openCategory('innenraum')">
-            <img src="assets/categories/innenraum.png">Innenraum
-        </div>
-
-        <div class="cat-btn" onclick="openCategory('technik')">
-            <img src="assets/categories/technik.png">Technik
-        </div>
-
-        <div class="cat-btn" onclick="openCategory('statik')">
-            <img src="assets/categories/statik.png">Statik
-        </div>
-
-        <div class="cat-btn" onclick="openCategory('fahrzeuge')">
-            <img src="assets/categories/fahrzeuge.png">Fahrzeuge
-        </div>
-
-        <div class="cat-btn" onclick="openCategory('komfort')">
-            <img src="assets/categories/komfort.png">Komfort
-        </div>
-
+        <div class="cat-btn" onclick="openCategory('haus')"><img src="assets/categories/haus.png">Haus</div>
+        <div class="cat-btn" onclick="openCategory('garten')"><img src="assets/categories/garten.png">Garten</div>
+        <div class="cat-btn" onclick="openCategory('terrasse')"><img src="assets/categories/terrasse.png">Terrasse</div>
+        <div class="cat-btn" onclick="openCategory('innenraum')"><img src="assets/categories/innenraum.png">Innenraum</div>
+        <div class="cat-btn" onclick="openCategory('technik')"><img src="assets/categories/technik.png">Technik</div>
+        <div class="cat-btn" onclick="openCategory('statik')"><img src="assets/categories/statik.png">Statik</div>
+        <div class="cat-btn" onclick="openCategory('fahrzeuge')"><img src="assets/categories/fahrzeuge.png">Fahrzeuge</div>
+        <div class="cat-btn" onclick="openCategory('komfort')"><img src="assets/categories/komfort.png">Komfort</div>
     </div>
 </div>
 
-<!-- BEISPIEL FÜR KATEGORIE SCREEN -->
+<!-- -----------------------------------------
+     ALLE KATEGORIE-SCREENS (MIT DIENSTLEISTUNGEN)
+----------------------------------------- -->
+
+<!-- HAUS -->
 <div id="screen-cat-haus" class="screen hidden">
     <div class="back-btn" onclick="showScreen('screen-category-select')">← Zurück</div>
     <h1 class="title">Haus & Gebäude – <span data-city-name></span></h1>
@@ -292,12 +255,86 @@ body {
     <div class="service-block"><b>Fenster & Türen</b></div>
 </div>
 
+<!-- GARTEN -->
+<div id="screen-cat-garten" class="screen hidden">
+    <div class="back-btn" onclick="showScreen('screen-category-select')">← Zurück</div>
+    <h1 class="title">Garten – <span data-city-name></span></h1>
+
+    <div class="service-block"><b>Rasen mähen</b></div>
+    <div class="service-block"><b>Heckenschnitt</b></div>
+    <div class="service-block"><b>Baumfällung</b></div>
+    <div class="service-block"><b>Bewässerung</b></div>
+</div>
+
+<!-- TERRASSE -->
+<div id="screen-cat-terrasse" class="screen hidden">
+    <div class="back-btn" onclick="showScreen('screen-category-select')">← Zurück</div>
+    <h1 class="title">Terrasse & Einfahrten – <span data-city-name></span></h1>
+
+    <div class="service-block"><b>Terrasse abreißen</b></div>
+    <div class="service-block"><b>Terrasse bauen</b></div>
+    <div class="service-block"><b>Einfahrt pflastern</b></div>
+</div>
+
+<!-- INNENRAUM -->
+<div id="screen-cat-innenraum" class="screen hidden">
+    <div class="back-btn" onclick="showScreen('screen-category-select')">← Zurück</div>
+    <h1 class="title">Innenraum – <span data-city-name></span></h1>
+
+    <div class="service-block"><b>Küchenumbau</b></div>
+    <div class="service-block"><b>Badsanierung</b></div>
+    <div class="service-block"><b>Bodenverlegung</b></div>
+</div>
+
+<!-- TECHNIK -->
+<div id="screen-cat-technik" class="screen hidden">
+    <div class="back-btn" onclick="showScreen('screen-category-select')">← Zurück</div>
+    <h1 class="title">Technik – <span data-city-name></span></h1>
+
+    <div class="service-block"><b>Elektrik</b></div>
+    <div class="service-block"><b>Smart Home</b></div>
+    <div class="service-block"><b>Heizung & Sanitär</b></div>
+</div>
+
+<!-- STATIK -->
+<div id="screen-cat-statik" class="screen hidden">
+    <div class="back-btn" onclick="showScreen('screen-category-select')">← Zurück</div>
+    <h1 class="title">Statik – <span data-city-name></span></h1>
+
+    <div class="service-block"><b>Wanddurchbrüche</b></div>
+    <div class="service-block"><b>Statikberechnung</b></div>
+</div>
+
+<!-- FAHRZEUGE -->
+<div id="screen-cat-fahrzeuge" class="screen hidden">
+    <div class="back-btn" onclick="showScreen('screen-category-select')">← Zurück</div>
+    <h1 class="title">Fahrzeuge – <span data-city-name></span></h1>
+
+    <div class="service-block"><b>Reifenservice</b></div>
+    <div class="service-block"><b>Smart Repair</b></div>
+    <div class="service-block"><b>Fahrzeugaufbereitung</b></div>
+</div>
+
+<!-- KOMFORT -->
+<div id="screen-cat-komfort" class="screen hidden">
+    <div class="back-btn" onclick="showScreen('screen-category-select')">← Zurück</div>
+    <h1 class="title">Komfort – <span data-city-name></span></h1>
+
+    <div class="service-block"><b>Hausmeisterservice</b></div>
+    <div class="service-block"><b>Reinigungsservice</b></div>
+    <div class="service-block"><b>Möbelmontage</b></div>
+</div>
+
+<!-- -----------------------------------------
+     JAVASCRIPT
+----------------------------------------- -->
 <script>
+
 let currentCity = null;
 
 function showScreen(id) {
-    document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
-    document.getElementById(id).style.display = "block";
+    document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
+    document.getElementById(id).classList.remove("hidden");
     window.scrollTo(0, 0);
 }
 
@@ -312,6 +349,7 @@ function selectCity(city) {
 function openCategory(cat) {
     showScreen("screen-cat-" + cat);
 }
+
 </script>
 
 </body>
